@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Shala | All-in-One Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Vadodara:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --bg: #f8f9fa;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Hind Vadodara', sans-serif;
+            margin: 0; display: flex; background: var(--bg); min-height: 100vh;
+        }
+
+        /* Sidebar Style */
+        .sidebar {
+            width: 250px; background: #2d3436; color: white;
+            padding: 20px; flex-shrink: 0;
+        }
+
+        .sidebar h2 { color: #a29bfe; font-size: 1.5rem; margin-bottom: 20px; text-align: center; }
+
+        .topic-list { list-style: none; padding: 0; }
+
+        .topic-item {
+            padding: 12px 15px; margin-bottom: 8px; border-radius: 10px;
+            cursor: pointer; transition: 0.3s; background: #3d4446;
+        }
+
+        .topic-item:hover, .topic-item.active { background: var(--primary); }
+
+        /* Main Content */
+        .main-content { flex-grow: 1; padding: 40px; display: flex; flex-direction: column; align-items: center; }
+
+        .quiz-container { width: 100%; max-width: 600px; }
+
+        .quiz-card {
+            background: var(--white); padding: 30px; border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .question-text { font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; }
+
+        .option-btn {
+            display: block; width: 100%; padding: 15px; margin-bottom: 10px;
+            border: 2px solid #eee; border-radius: 12px; cursor: pointer;
+            font-size: 1rem; font-weight: 600; text-align: left; background: white;
+        }
+
+        .option-btn:hover { border-color: var(--primary); background: #f0f3ff; }
+
+        .correct { background-color: #d1fae5 !important; border-color: #10b981 !important; color: #065f46; }
+        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+
+        .next-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; border: none; padding: 12px 25px; border-radius: 10px;
+            cursor: pointer; float: right; display: none; font-weight: bold;
+        }
+
+        .explanation {
+            margin-top: 15px; padding: 15px; background: #f1f2f6;
+            border-left: 5px solid var(--primary); display: none;
+        }
+        
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; order: 2; }
+            .main-content { order: 1; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>Tech Shala</h2>
+        <p style="text-align: center; font-size: 0.8rem; color: #ccc;">વિષય પસંદ કરો</p>
+        <ul class="topic-list" id="topic-menu">
+            <li class="topic-item active" onclick="changeTopic('history', this)">📜 ઇતિહાસ (History)</li>
+            <li class="topic-item" onclick="changeTopic('gk', this)">🌍 સામાન્ય જ્ઞાન (GK)</li>
+            <li class="topic-item" onclick="changeTopic('law', this)">⚖️ કાયદો (Law - PSI)</li>
+            <li class="topic-item" onclick="changeTopic('gujarati', this)">✍️ ગુજરાતી વ્યાકરણ</li>
+            </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="quiz-container">
+            <div style="margin-bottom: 15px; font-weight: bold; color: var(--secondary);">
+                વિષય: <span id="current-topic-name">ઇતિહાસ</span> | 
+                સ્કોર: <span id="score">0</span>
+            </div>
+            
+            <div class="quiz-card">
+                <div id="q-counter" style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">સવાલ 1</div>
+                <div class="question-text" id="question">લોડ થઈ રહ્યું છે...</div>
+                <div id="options-container"></div>
+                <div class="explanation" id="explanation">
+                    <strong>💡 સમજૂતી:</strong> <span id="exp-text"></span>
+                </div>
+                <button class="next-btn" id="next-btn" onclick="nextQuestion()">આગળ વધો →</button>
+                <div style="clear: both;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // અહીં દરેક વિષયનો ડેટા અલગ રાખવો
+        const allQuizzes = {
+            history: [
+                { q: "સિંધુ ખીણની સભ્યતાનું કયું સ્થળ ગુજરાતમાં પ્રથમ મળી આવ્યું?", options: ["લોથલ", "રંગપુર", "ધોળાવીરા", "રોજડી"], correct: 1, exp: "૧૯૩૧માં અમદાવાદના ધંધુકા પાસે રંગપુર પ્રથમ શોધાયું હતું." },
+                { q: "લોથલ કઈ નદીના કિનારે આવેલું છે?", options: ["ભાદર", "હિરણ", "ભોગાવો", "મહી"], correct: 2, exp: "લોથલ ભોગાવો નદીના કિનારે આવેલું પ્રાચીન બંદર હતું." }
+            ],
+            gk: [
+                { q: "ગુજરાતનું રાજ્ય પ્રાણી કયું છે?", options: ["વાઘ", "સિંહ", "હાથી", "ચિત્તો"], correct: 1, exp: "એશિયાટિક લાયન (સિંહ) ગુજરાતનું રાજ્ય પ્રાણી છે." },
+                { q: "ભારતનું પ્રથમ સ્પેસ સેન્ટર ક્યાં સ્થાપવામાં આવ્યું હતું?", options: ["બેંગલોર", "થુમ્બા", "શ્રીહરિકોટા", "અમદાવાદ"], correct: 1, exp: "કેરળના થુમ્બામાં પ્રથમ રોકેટ લોન્ચિંગ સ્ટેશન સ્થપાયું હતું." }
+            ],
+            law: [
+                { q: "IPC ની કઈ કલમ હેઠળ 'ખૂન' ની સજાની જોગવાઈ છે?", options: ["કલમ ૩૦૦", "કલમ ૩૦૨", "કલમ ૩૦૭", "કલમ ૩૭૬"], correct: 1, exp: "કલમ ૩૦૨ મુજબ ખૂન માટે ફાંસી અથવા આજીવન કેદની સજા થઈ શકે છે." }
+            ],
+            gujarati: [
+                { q: "'છેડો ફાડવો' રૂઢિપ્રયોગનો અર્થ આપો.", options: ["છૂટાછેડા લેવા", "કપડાં ફાડી નાખવા", "સંબંધ તોડી નાખવો", "મદદ કરવી"], correct: 2, exp: "છેડો ફાડવો એટલે કોઈની સાથેનો સંબંધ કાયમ માટે તોડી નાખવો." }
+            ]
+        };
+
+        let currentTopic = 'history';
+        let currentIdx = 0;
+        let score = 0;
+        let answered = false;
+
+        function changeTopic(topicKey, element) {
+            // મેનુ માં એક્ટિવ ક્લાસ બદલો
+            document.querySelectorAll('.topic-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+
+            // ડેટા રીસેટ કરો
+            currentTopic = topicKey;
+            currentIdx = 0;
+            score = 0;
+            document.getElementById('score').innerText = "0";
+            document.getElementById('current-topic-name').innerText = element.innerText;
+            
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            answered = false;
+            const data = allQuizzes[currentTopic][currentIdx];
+            
+            document.getElementById('q-counter').innerText = `સવાલ ${currentIdx + 1}/${allQuizzes[currentTopic].length}`;
+            document.getElementById('question').innerText = data.q;
+            document.getElementById('explanation').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+            
+            const optionsBox = document.getElementById('options-container');
+            optionsBox.innerHTML = '';
+
+            data.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(index, btn);
+                optionsBox.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex, btn) {
+            if (answered) return;
+            answered = true;
+
+            const correctIndex = allQuizzes[currentTopic][currentIdx].correct;
+            const allBtns = document.querySelectorAll('.option-btn');
+
+            if (selectedIndex === correctIndex) {
+                btn.classList.add('correct');
+                score++;
+                document.getElementById('score').innerText = score;
+            } else {
+                btn.classList.add('wrong');
+                allBtns[correctIndex].classList.add('correct');
+            }
+
+            document.getElementById('exp-text').innerText = allQuizzes[currentTopic][currentIdx].exp;
+            document.getElementById('explanation').style.display = 'block';
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            if (currentIdx < allQuizzes[currentTopic].length - 1) {
+                currentIdx++;
+                loadQuestion();
+            } else {
+                alert(`આ વિષયની ક્વિઝ પૂરી થઈ! તમારો સ્કોર: ${score}/${allQuizzes[currentTopic].length}`);
+            }
+        }
+
+        // પેજ લોડ થાય ત્યારે પ્રથમ વિષય શરૂ કરો
+        window.onload = loadQuestion;
+    </script>
+</body>
+</html>
