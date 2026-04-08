@@ -9,79 +9,108 @@
         :root {
             --primary: #667eea;
             --secondary: #764ba2;
-            --bg: #f8f9fa;
+            --dark: #2d3436;
             --white: #ffffff;
         }
 
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
             font-family: 'Hind Vadodara', sans-serif;
-            margin: 0; display: flex; background: var(--bg); min-height: 100vh;
+            background-color: #f0f2f5;
+            display: flex;
+            min-height: 100vh;
         }
 
-        /* Sidebar Style */
+        /* --- SIDEBAR STYLE --- */
         .sidebar {
-            width: 250px; background: #2d3436; color: white;
-            padding: 20px; flex-shrink: 0;
+            width: 280px; background: var(--dark); color: white;
+            transition: 0.3s; z-index: 1000;
+            display: flex; flex-direction: column;
         }
 
-        .sidebar h2 { color: #a29bfe; font-size: 1.5rem; margin-bottom: 20px; text-align: center; }
+        .sidebar-header { padding: 25px; text-align: center; border-bottom: 1px solid #444; }
+        .sidebar-header h2 { color: #a29bfe; font-size: 1.6rem; }
 
-        .topic-list { list-style: none; padding: 0; }
-
+        .topic-list { padding: 15px; list-style: none; flex-grow: 1; overflow-y: auto; }
         .topic-item {
-            padding: 12px 15px; margin-bottom: 8px; border-radius: 10px;
-            cursor: pointer; transition: 0.3s; background: #3d4446;
+            padding: 12px 18px; margin-bottom: 8px; border-radius: 12px;
+            cursor: pointer; transition: 0.2s; background: #3d4446;
+            font-weight: 600; display: flex; align-items: center;
         }
-
         .topic-item:hover, .topic-item.active { background: var(--primary); }
 
-        /* Main Content */
-        .main-content { flex-grow: 1; padding: 40px; display: flex; flex-direction: column; align-items: center; }
+        /* --- MAIN AREA --- */
+        .main-container { flex-grow: 1; display: flex; flex-direction: column; width: 100%; }
 
-        .quiz-container { width: 100%; max-width: 600px; }
-
-        .quiz-card {
-            background: var(--white); padding: 30px; border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        /* Top Navigation for Mobile */
+        .top-nav {
+            background: var(--white); padding: 15px 20px;
+            display: none; align-items: center; justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        .question-text { font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; }
+        .menu-btn {
+            background: var(--primary); color: white; border: none;
+            padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 1.2rem;
+        }
+
+        .content { padding: 30px; display: flex; flex-direction: column; align-items: center; }
+
+        /* --- QUIZ CARD --- */
+        .quiz-card {
+            background: var(--white); width: 100%; max-width: 550px;
+            border-radius: 20px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .question-text { font-size: 1.25rem; font-weight: 700; margin-bottom: 25px; line-height: 1.5; }
 
         .option-btn {
-            display: block; width: 100%; padding: 15px; margin-bottom: 10px;
-            border: 2px solid #eee; border-radius: 12px; cursor: pointer;
-            font-size: 1rem; font-weight: 600; text-align: left; background: white;
+            display: block; width: 100%; padding: 16px; margin-bottom: 12px;
+            border: 2px solid #edf2f7; border-radius: 15px; cursor: pointer;
+            font-size: 1rem; font-weight: 600; text-align: left; background: white; transition: 0.2s;
         }
 
-        .option-btn:hover { border-color: var(--primary); background: #f0f3ff; }
+        .option-btn:hover:not(:disabled) { border-color: var(--primary); background: #f8f9fe; }
+        .correct { background-color: #e6fffa !important; border-color: #38b2ac !important; color: #234e52; }
+        .wrong { background-color: #fff5f5 !important; border-color: #fc8181 !important; color: #742a2a; }
 
-        .correct { background-color: #d1fae5 !important; border-color: #10b981 !important; color: #065f46; }
-        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b; }
+        .explanation {
+            margin-top: 20px; padding: 15px; background: #f7fafc;
+            border-left: 4px solid var(--primary); border-radius: 8px; display: none;
+        }
 
         .next-btn {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white; border: none; padding: 12px 25px; border-radius: 10px;
-            cursor: pointer; float: right; display: none; font-weight: bold;
+            color: white; border: none; padding: 14px 30px; border-radius: 12px;
+            cursor: pointer; float: right; display: none; font-weight: 700; margin-top: 20px;
         }
 
-        .explanation {
-            margin-top: 15px; padding: 15px; background: #f1f2f6;
-            border-left: 5px solid var(--primary); display: none;
-        }
-        
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .sidebar { width: 100%; order: 2; }
-            .main-content { order: 1; padding: 20px; }
+        /* --- MOBILE RESPONSIVE --- */
+        @media (max-width: 850px) {
+            .sidebar {
+                position: fixed; left: -280px; height: 100%;
+            }
+            .sidebar.open { left: 0; }
+            .top-nav { display: flex; }
+            .content { padding: 15px; }
+            .sidebar-overlay {
+                display: none; position: fixed; top: 0; left: 0; width: 100%;
+                height: 100%; background: rgba(0,0,0,0.5); z-index: 999;
+            }
+            .sidebar-overlay.active { display: block; }
         }
     </style>
 </head>
 <body>
+<div class="sidebar-overlay" id="overlay" onclick="toggleMenu()"></div>
 
-    <div class="sidebar">
-        <h2>Tech Shala</h2>
-        <p style="text-align: center; font-size: 0.8rem; color: #ccc;">વિષય પસંદ કરો</p>
-        <ul class="topic-list" id="topic-menu">
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Tech Shala</h2>
+            <p style="font-size: 0.8rem; opacity: 0.8;">ડિજિટલ શિક્ષણ, ગુજરાત</p>
+        </div>
+        <ul class="topic-list">
             <li class="topic-item active" onclick="changeTopic('history', this)"> ઇતિહાસ </li>
             <li class="topic-item" onclick="changeTopic('gk', this)"> સામાન્ય જ્ઞાન </li>
              <li class="topic-item" onclick="changeTopic('geography', this)"> ભૂગોળ</li>
@@ -95,26 +124,32 @@
             </ul>
     </div>
 
-    <div class="main-content">
-        <div class="quiz-container">
-            <div style="margin-bottom: 15px; font-weight: bold; color: var(--secondary);">
-                વિષય: <span id="current-topic-name">ઇતિહાસ</span> | 
-                સ્કોર: <span id="score">0</span>
-            </div>
-            
+    <div class="main-container">
+        <div class="top-nav">
+            <button class="menu-btn" onclick="toggleMenu()">☰ વિષયો</button>
+            <div style="font-weight: 700; color: var(--secondary);">Tech Shala</div>
+        </div>
+
+        <div class="content">
             <div class="quiz-card">
-                <div id="q-counter" style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">સવાલ 1</div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.9rem; font-weight: bold; color: #718096;">
+                    <span id="topic-display">વિષય: ઇતિહાસ</span>
+                    <span style="color: #38b2ac;">સ્કોર: <span id="score">0</span></span>
+                </div>
+                
+                <div id="q-counter" style="color: #a0aec0; margin-bottom: 8px;">સવાલ 1</div>
                 <div class="question-text" id="question">લોડ થઈ રહ્યું છે...</div>
                 <div id="options-container"></div>
+
                 <div class="explanation" id="explanation">
-                    <strong>💡 સમજૂતી:</strong> <span id="exp-text"></span>
+                    <strong>💡 સમજૂતી:</strong> <p id="exp-text" style="margin-top: 5px;"></p>
                 </div>
+
                 <button class="next-btn" id="next-btn" onclick="nextQuestion()">આગળ વધો →</button>
                 <div style="clear: both;"></div>
             </div>
         </div>
     </div>
-
     <script>
         // અહીં દરેક વિષયનો ડેટા અલગ રાખવો
         const allQuizzes = {
@@ -16462,17 +16497,24 @@
         let score = 0;
         let answered = false;
 
+        // મેનુ ખોલવા/બંધ કરવા માટે
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
         function changeTopic(topicKey, element) {
-            // મેનુ માં એક્ટિવ ક્લાસ બદલો
             document.querySelectorAll('.topic-item').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
 
-            // ડેટા રીસેટ કરો
             currentTopic = topicKey;
             currentIdx = 0;
             score = 0;
             document.getElementById('score').innerText = "0";
-            document.getElementById('current-topic-name').innerText = element.innerText;
+            document.getElementById('topic-display').innerText = "વિષય: " + element.innerText.replace(/[^\u0A80-\u0AFF\s]/g, "");
+            
+            // જો મોબાઈલ હોય તો મેનુ બંધ કરો
+            if(window.innerWidth <= 850) toggleMenu();
             
             loadQuestion();
         }
@@ -16504,6 +16546,7 @@
 
             const correctIndex = allQuizzes[currentTopic][currentIdx].correct;
             const allBtns = document.querySelectorAll('.option-btn');
+            allBtns.forEach(b => b.disabled = true);
 
             if (selectedIndex === correctIndex) {
                 btn.classList.add('correct');
@@ -16524,11 +16567,10 @@
                 currentIdx++;
                 loadQuestion();
             } else {
-                alert(`આ વિષયની ક્વિઝ પૂરી થઈ! તમારો સ્કોર: ${score}/${allQuizzes[currentTopic].length}`);
+                alert(`આ વિષયની ક્વિઝ પૂર્ણ થઈ! સ્કોર: ${score}/${allQuizzes[currentTopic].length}`);
             }
         }
 
-        // પેજ લોડ થાય ત્યારે પ્રથમ વિષય શરૂ કરો
         window.onload = loadQuestion;
     </script>
 </body>
