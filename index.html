@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tech Shala | All-in-One Quiz</title>
+    <title>Tech Shala | Multi-Topic Quiz App</title>
     <link href="https://fonts.googleapis.com/css2?family=Hind+Vadodara:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -22,7 +22,7 @@
             min-height: 100vh;
         }
 
-        /* --- SIDEBAR STYLE --- */
+        /* --- SIDEBAR --- */
         .sidebar {
             width: 280px; background: var(--dark); color: white;
             transition: 0.3s; z-index: 1000;
@@ -36,14 +36,13 @@
         .topic-item {
             padding: 12px 18px; margin-bottom: 8px; border-radius: 12px;
             cursor: pointer; transition: 0.2s; background: #3d4446;
-            font-weight: 600; display: flex; align-items: center;
+            font-weight: 600;
         }
         .topic-item:hover, .topic-item.active { background: var(--primary); }
 
         /* --- MAIN AREA --- */
         .main-container { flex-grow: 1; display: flex; flex-direction: column; width: 100%; }
 
-        /* Top Navigation for Mobile */
         .top-nav {
             background: var(--white); padding: 15px 20px;
             display: none; align-items: center; justify-content: space-between;
@@ -52,7 +51,7 @@
 
         .menu-btn {
             background: var(--primary); color: white; border: none;
-            padding: 8px 12px; border-radius: 5px; cursor: pointer; font-size: 1.2rem;
+            padding: 8px 12px; border-radius: 5px; cursor: pointer;
         }
 
         .content { padding: 30px; display: flex; flex-direction: column; align-items: center; }
@@ -61,6 +60,21 @@
         .quiz-card {
             background: var(--white); width: 100%; max-width: 550px;
             border-radius: 20px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            position: relative;
+        }
+
+        /* Jump to Question Box */
+        .jump-container {
+            display: flex; align-items: center; gap: 8px; background: #f1f5f9;
+            padding: 5px 10px; border-radius: 10px; margin-bottom: 15px;
+        }
+        .jump-input {
+            width: 60px; padding: 5px; border: 1px solid #cbd5e1;
+            border-radius: 5px; text-align: center; font-weight: bold;
+        }
+        .jump-btn {
+            background: var(--secondary); color: white; border: none;
+            padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 0.85rem;
         }
 
         .question-text { font-size: 1.25rem; font-weight: 700; margin-bottom: 25px; line-height: 1.5; }
@@ -68,10 +82,9 @@
         .option-btn {
             display: block; width: 100%; padding: 16px; margin-bottom: 12px;
             border: 2px solid #edf2f7; border-radius: 15px; cursor: pointer;
-            font-size: 1rem; font-weight: 600; text-align: left; background: white; transition: 0.2s;
+            font-size: 1rem; font-weight: 600; text-align: left; background: white;
         }
 
-        .option-btn:hover:not(:disabled) { border-color: var(--primary); background: #f8f9fe; }
         .correct { background-color: #e6fffa !important; border-color: #38b2ac !important; color: #234e52; }
         .wrong { background-color: #fff5f5 !important; border-color: #fc8181 !important; color: #742a2a; }
 
@@ -80,17 +93,21 @@
             border-left: 4px solid var(--primary); border-radius: 8px; display: none;
         }
 
-        .next-btn {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white; border: none; padding: 14px 30px; border-radius: 12px;
-            cursor: pointer; float: right; display: none; font-weight: 700; margin-top: 20px;
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 30px; }
+
+        .btn { padding: 12px 25px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; }
+        .prev-btn { background: #e2e8f0; color: #4a5568; }
+        .next-btn { background: var(--primary); color: white; }
+
+        /* Made By Credit Style */
+        .credit-line {
+            text-align: center; margin-top: 25px; font-size: 0.8rem;
+            color: #a0aec0; letter-spacing: 0.5px; border-top: 1px solid #f1f5f9;
+            padding-top: 15px; font-weight: 600;
         }
 
-        /* --- MOBILE RESPONSIVE --- */
         @media (max-width: 850px) {
-            .sidebar {
-                position: fixed; left: -280px; height: 100%;
-            }
+            .sidebar { position: fixed; left: -280px; height: 100%; }
             .sidebar.open { left: 0; }
             .top-nav { display: flex; }
             .content { padding: 15px; }
@@ -103,13 +120,11 @@
     </style>
 </head>
 <body>
-<div class="sidebar-overlay" id="overlay" onclick="toggleMenu()"></div>
+
+    <div class="sidebar-overlay" id="overlay" onclick="toggleMenu()"></div>
 
     <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h2>Tech Shala</h2>
-            <p style="font-size: 0.8rem; opacity: 0.8;">ડિજિટલ શિક્ષણ, ગુજરાત</p>
-        </div>
+        <div class="sidebar-header"><h2>Tech Shala</h2></div>
         <ul class="topic-list">
             <li class="topic-item active" onclick="changeTopic('history', this)"> ઇતિહાસ </li>
             <li class="topic-item" onclick="changeTopic('gk', this)"> સામાન્ય જ્ઞાન </li>
@@ -127,26 +142,38 @@
     <div class="main-container">
         <div class="top-nav">
             <button class="menu-btn" onclick="toggleMenu()">☰ વિષયો</button>
-            <div style="font-weight: 700; color: var(--secondary);">Tech Shala</div>
+            <div style="font-weight: 700;">Tech Shala</div>
         </div>
 
         <div class="content">
             <div class="quiz-card">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.9rem; font-weight: bold; color: #718096;">
-                    <span id="topic-display">વિષય: ઇતિહાસ</span>
-                    <span style="color: #38b2ac;">સ્કોર: <span id="score">0</span></span>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div id="q-counter" style="color: #4a5568; font-weight: bold;">સવાલ 1/2</div>
+                    <div class="jump-container">
+                        <input type="number" id="jump-input" class="jump-input" placeholder="No.">
+                        <button class="jump-btn" onclick="jumpToQuestion()">Go</button>
+                    </div>
+                </div>
+
+                <div style="font-size: 0.85rem; margin-bottom: 10px; color: #38b2ac; font-weight: bold;">
+                    સ્કોર: <span id="score">0</span>
                 </div>
                 
-                <div id="q-counter" style="color: #a0aec0; margin-bottom: 8px;">સવાલ 1</div>
                 <div class="question-text" id="question">લોડ થઈ રહ્યું છે...</div>
                 <div id="options-container"></div>
 
                 <div class="explanation" id="explanation">
-                    <strong>💡 સમજૂતી:</strong> <p id="exp-text" style="margin-top: 5px;"></p>
+                    <strong>💡 સમજૂતી:</strong> <p id="exp-text"></p>
                 </div>
 
-                <button class="next-btn" id="next-btn" onclick="nextQuestion()">આગળ વધો →</button>
-                <div style="clear: both;"></div>
+                <div class="nav-buttons">
+                    <button class="btn prev-btn" id="prev-btn" onclick="prevQuestion()">← પાછળ</button>
+                    <button class="btn next-btn" id="next-btn" onclick="nextQuestion()">આગળ વધો →</button>
+                </div>
+
+                <div class="credit-line">
+                    Made by - SIDHARAJSINH SOLANKI
+                </div>
             </div>
         </div>
     </div>
@@ -16495,9 +16522,8 @@
         let currentTopic = 'history';
         let currentIdx = 0;
         let score = 0;
-        let answered = false;
+        let userAnswers = {}; 
 
-        // મેનુ ખોલવા/બંધ કરવા માટે
         function toggleMenu() {
             document.getElementById('sidebar').classList.toggle('open');
             document.getElementById('overlay').classList.toggle('active');
@@ -16506,27 +16532,21 @@
         function changeTopic(topicKey, element) {
             document.querySelectorAll('.topic-item').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
-
             currentTopic = topicKey;
             currentIdx = 0;
             score = 0;
+            userAnswers = {}; 
             document.getElementById('score').innerText = "0";
-            document.getElementById('topic-display').innerText = "વિષય: " + element.innerText.replace(/[^\u0A80-\u0AFF\s]/g, "");
-            
-            // જો મોબાઈલ હોય તો મેનુ બંધ કરો
             if(window.innerWidth <= 850) toggleMenu();
-            
             loadQuestion();
         }
 
         function loadQuestion() {
-            answered = false;
             const data = allQuizzes[currentTopic][currentIdx];
+            const total = allQuizzes[currentTopic].length;
             
-            document.getElementById('q-counter').innerText = `સવાલ ${currentIdx + 1}/${allQuizzes[currentTopic].length}`;
+            document.getElementById('q-counter').innerText = `સવાલ ${currentIdx + 1}/${total}`;
             document.getElementById('question').innerText = data.q;
-            document.getElementById('explanation').style.display = 'none';
-            document.getElementById('next-btn').style.display = 'none';
             
             const optionsBox = document.getElementById('options-container');
             optionsBox.innerHTML = '';
@@ -16535,31 +16555,58 @@
                 const btn = document.createElement('button');
                 btn.className = 'option-btn';
                 btn.innerText = opt;
-                btn.onclick = () => checkAnswer(index, btn);
+                
+                if (userAnswers[currentIdx] !== undefined) {
+                    btn.disabled = true;
+                    if (index === data.correct) btn.classList.add('correct');
+                    if (index === userAnswers[currentIdx] && index !== data.correct) btn.classList.add('wrong');
+                    showExplanation();
+                } else {
+                    btn.onclick = () => checkAnswer(index, btn);
+                    document.getElementById('explanation').style.display = 'none';
+                }
                 optionsBox.appendChild(btn);
             });
+
+            document.getElementById('prev-btn').disabled = currentIdx === 0;
+            document.getElementById('next-btn').innerText = currentIdx === total - 1 ? "સબમિટ" : "આગળ વધો →";
+        }
+
+        function jumpToQuestion() {
+            const input = document.getElementById('jump-input').value;
+            const targetIdx = parseInt(input) - 1;
+            const total = allQuizzes[currentTopic].length;
+
+            if (targetIdx >= 0 && targetIdx < total) {
+                currentIdx = targetIdx;
+                loadQuestion();
+                document.getElementById('jump-input').value = ''; 
+            } else {
+                alert(`કૃપા કરીને ૧ થી ${total} વચ્ચેનો નંબર નાખો.`);
+            }
         }
 
         function checkAnswer(selectedIndex, btn) {
-            if (answered) return;
-            answered = true;
+            const data = allQuizzes[currentTopic][currentIdx];
+            userAnswers[currentIdx] = selectedIndex;
 
-            const correctIndex = allQuizzes[currentTopic][currentIdx].correct;
             const allBtns = document.querySelectorAll('.option-btn');
             allBtns.forEach(b => b.disabled = true);
 
-            if (selectedIndex === correctIndex) {
+            if (selectedIndex === data.correct) {
                 btn.classList.add('correct');
                 score++;
                 document.getElementById('score').innerText = score;
             } else {
                 btn.classList.add('wrong');
-                allBtns[correctIndex].classList.add('correct');
+                allBtns[data.correct].classList.add('correct');
             }
+            showExplanation();
+        }
 
+        function showExplanation() {
             document.getElementById('exp-text').innerText = allQuizzes[currentTopic][currentIdx].exp;
             document.getElementById('explanation').style.display = 'block';
-            document.getElementById('next-btn').style.display = 'block';
         }
 
         function nextQuestion() {
@@ -16567,7 +16614,14 @@
                 currentIdx++;
                 loadQuestion();
             } else {
-                alert(`આ વિષયની ક્વિઝ પૂર્ણ થઈ! સ્કોર: ${score}/${allQuizzes[currentTopic].length}`);
+                alert(`ક્વિઝ પૂર્ણ! સ્કોર: ${score}/${allQuizzes[currentTopic].length}`);
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) {
+                currentIdx--;
+                loadQuestion();
             }
         }
 
