@@ -16635,9 +16635,12 @@
         
 
 fetch("https://api.countapi.xyz/hit/sidhrajinfo-tech.github.io/psipractice")
-  .then(response => response.json())
-  .then(data => {
-    document.getElementById('visit-count').innerText = data.value;
+  .then(res => res.json())
+  .then(res => {
+    document.getElementById("visit-count").innerText = res.value;
+  })
+  .catch(() => {
+    document.getElementById("visit-count").innerText = "Error";
   });
     </script>
 </body>
