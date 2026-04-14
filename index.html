@@ -174,9 +174,11 @@
                 <div class="credit-line">
                     Made by - SIDHARAJSINH SOLANKI
                 </div>
-                <div class="credit-line">
-                   Total Visitors: <span id="visit-count">Loading...</span>
-                </div>
+                <div style="text-align: center; font-size: 0.75rem; color: #a0aec0; margin-top: 5px; display: flex; justify-content: center; align-items: center; gap: 5px;">
+    Total Views: 
+    <img src="https://hitscounter.dev/api/hit?url=https%3A%2F%2Fsidhrajinfo-tech.github.io%2FPSIPRACTICE%2F&label=&icon=github&color=%23198754&message=&style=flat&tz=UTC">
+</div>
+                
                
               
             </div>
@@ -16632,16 +16634,7 @@
 
         window.onload = loadQuestion;
 
-        
-
-fetch("https://api.countapi.xyz/hit/sidhrajinfo-tech.github.io/psipractice")
-  .then(res => res.json())
-  .then(res => {
-    document.getElementById("visit-count").innerText = res.value;
-  })
-  .catch(() => {
-    document.getElementById("visit-count").innerText = "Error";
-  });
+      
     </script>
 </body>
 </html>
