@@ -16632,13 +16632,9 @@
 
         window.onload = loadQuestion;
 
-        fetch('https://api.countapi.xyz/hit/https://sidhrajinfo-tech.github.io/PSIPRACTICE/visits')
-  .then(res => res.json())
-  .then(res => {
-    document.getElementById('view-count').innerText = res.value;
-  });
+        
 
-fetch('https://api.countapi.xyz/hit/sidhrajinfo-tech/psipractice')
+fetch("https://api.countapi.xyz/hit/sidhrajinfo-tech.github.io/psipractice")
   .then(response => response.json())
   .then(data => {
     document.getElementById('visit-count').innerText = data.value;
